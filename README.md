@@ -1,6 +1,6 @@
 - 👋 Hi, I’m David
 - 👀 I’m interested in Bioinformatics and Clinical Informatics
-- 🌱 I’m currently learning Java and Matlab
+- 🌱 I’m currently learning Java, Matlab and Python.
 - 💞️ I’m looking to collaborate on stuff
 - 📫 How to reach me: just message me!
 
