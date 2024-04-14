@@ -79,7 +79,7 @@ for i in range(channels.size):
     freq_data = np.fft.fftshift(np.fft.fft(filtData[i, :]))
     plt.plot(freq_x, np.abs(freq_data), 'm',linewidth=0.5); plt.xlim(fc)
     plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(str(channels[0][i]) + ' - Frequency Domain')
-plt.show()
+plt.close()
 
 # ICA
 r = channels.size
@@ -106,7 +106,7 @@ for i in range(1, r):
     freq_data = np.fft.fftshift(np.fft.fft(Zfica[i, :]))
     plt.plot(freq_x, np.abs(freq_data), 'm')
     plt.xlim(fc_bandpass); plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(f'Component {i} - Frequency Domain')
-plt.show()
+plt.close()
 
 # Plot all ICs in the same graph
 for i in range(r):
@@ -115,7 +115,7 @@ for i in range(r):
     plt.plot(t, Zfica[i, :], '-',  linewidth=0.1)
     plt.xlim([0, 50])
     plt.ylabel(str(i + 1))
-plt.show()
+plt.close()
 
 #Reconstruction of the EEG data without the noisy IC
 noisy_components = []  
@@ -146,7 +146,7 @@ for i in range(channels.size):
     plt.plot(freq_x, np.abs(freq_data), 'm')
     plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(str(channels[0][i]) + ' - Frequency Domain')
     plt.xlim(fc)  # Set frequency range
-plt.show()
+plt.close()
 
 #Plotting the spectrogram
 for i in range(channels.size):
@@ -155,7 +155,7 @@ for i in range(channels.size):
     plt.pcolormesh(t, f, 10 * np.log10(Sxx), shading='gouraud')
     plt.colorbar(label='Power (dB)'); plt.ylim(fc) 
     plt.title("Short Time Fourier Transform - " + str(channels[0][i])); plt.ylabel('Frequency [Hz]'); plt.xlabel('Time [sec]')
-plt.show()
+plt.close()
 
-np.savez(f'/Users/davidteixeira/Documents/Universidade/Tese/EEG_{subj}_processed.npz', fs=fs, channels=channels, filtData=filtData)
+np.savez(f'/Users/davidteixeira/Documents/GitHub/DavidJMT/Tese/EEG_{subj}_processed.npz', fs=fs, channels=channels, filtData=filtData)
 print("User information saved to 'EEG_1.txt' successfully.")
