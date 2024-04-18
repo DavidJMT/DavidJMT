@@ -1,5 +1,7 @@
 %% Read raw data and remove excess data from non-relevant video
 
+subj = 9;
+
 allData = trc_file('/Users/davidteixeira/EEG_1.TRC');
 allData.get_electrode_info();
 [data] = allData.def_data_access (allData.a_n_data_secs,5,allData.a_file_elec_cell); %[data,time]=def_data_access(self, wsize, step, channs_cell, offset)
