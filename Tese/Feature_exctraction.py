@@ -1,16 +1,38 @@
 import numpy as np
-from scipy.signal import spectrogram
+from scipy.signal import spectrogram, welch, csd
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from scipy.stats import kstest
+
+def findDataDistribution(method,neutData,StimData,signifChannels):
+        
+        print("Kolmogorov-Smirnov test ("+method+")\n\n") 
+        
+        for i in range(len(signifChannels)):
+            for j in range(i+1,len(signifChannels)):
+        
+                #neutral data
+                normalized_data_n = (neutData[i,j,:]-np.mean(neutData[i,j,:]))/np.std(neutData[i,j,:])
+                h_neut = kstest(normalized_data_n, 'norm')
+                if h_neut==1: #h=0 -> normal distribution
+                    print(signifChannels[i]+"-"+signifChannels[j]+" (neutral) doesn't have a normal distribution\n")
+        
+                #stimulus data
+                normalized_data_s = (StimData[i,j,:]-np.mean(StimData[i,j,:]))/np.std(StimData[i,j,:])
+                h_stim = kstest(normalized_data_s, 'norm')
+                if h_stim==1: #h=0 -> normal distribution
+                    print(signifChannels[i]+"-"+signifChannels[j]+" (stimulus) doesn't have a normal distribution\n")
+
+
+
 
 participants = np.array([9, 18, 19, 24]) #list for the participants
 numPartic = len(participants)
 numChannels = 19
 fs = 512
 condition = input("Choose one condition: threat, sound, rock: ")
-
 
 # Feature Extraction
 stimulus_length = np.arange(round(122.8 * fs), round(123.8 * fs))  # threat stimulus appearance- 122.8s to 123.8s
@@ -88,7 +110,7 @@ for participant in range(numPartic):
     print(participant+1)
 
 # create column names for the final features table
-columnNames=[]; #column names for the final features table
+columnNames=[]; 
 
 for c in range(len(channels)):
     for b in range(len(bands)):
@@ -98,50 +120,19 @@ for c in range(len(channels)):
 for i in range(len(channels)):
     for j in range(len(bands)):
         label = channels[i] + "_" + bands[j]
-        indices = np.where(np.array(columnNames) == label)[0]
+        label_index = columnNames.index(label)
 
-        data_0 = all_subj[:, 0, indices]
-        data_1 = all_subj[:, 1, indices]
-        data_2 = all_subj[:, 2, indices]
-        data_3 = all_subj[:, 3, indices]
-        data_4 = all_subj[:, 4, indices]
-
-        datai_0 = data_0.reshape(all_subj.shape[0], -1)
-        datai_1 = data_1.reshape(all_subj.shape[0], -1)
-        datai_2 = data_2.reshape(all_subj.shape[0], -1)
-        datai_3 = data_3.reshape(all_subj.shape[0], -1)
-        datai_4 = data_4.reshape(all_subj.shape[0], -1)
-
-        data = [datai_0, datai_1, datai_2, datai_3, datai_4]
-
-        data_flattened = [array.flatten() for array in data]
+        data_flattened = []
+        for k in range(5):  # Assuming there are 5 time points
+            data_k = all_subj[:, k, label_index]
+            datai_k = data_k.reshape(all_subj.shape[0], -1)
+            data_flattened.append(datai_k.flatten())
 
         plt.figure()
         plt.boxplot(data_flattened, sym='', labels=['t(neutral)', 't(stimulus)', 't(stimulus+1)', 't(stimulus+2)','t(stimulus+3)'])
         plt.title(f"Channel: {channels[i]}; Frequency Band: {bands[j]}")
         plt.ylabel('Relative PSD')
         plt.close()
-
-
-# for i in range(len(channels)):
-#     for j in range (len(bands)):
-#         label = channels[i] + "_" + bands[j]
-#         indices = np.where(np.array(columnNames) == label)[0]
-#         print(indices)
-#         data = [all_subj[:, 0, indices],
-#                 all_subj[:, 1, indices],
-#                 all_subj[:, 2, indices],
-#                 all_subj[:, 3, indices],
-#                 all_subj[:, 4, indices]]
-        
-#         result = stats.kruskal(data[0], data[1], data[2], data[3], data[4])
-
-#         print("Statistic:", result.statistic)
-#         print("p-value:", result.pvalue)
-
-
-from scipy.stats import kstest
-import numpy as np
 
 print("Kolmogorov-Smirnov test\n")
 
@@ -155,44 +146,119 @@ for i in range(len(channels)):
             if std_dev > 0:  # Check if standard deviation is greater than zero
                 normalized_data = (data - np.mean(data)) / std_dev
                 h = kstest(normalized_data, 'norm')
-            else:
-                print(f"Standard deviation of data for group {channels[i]}_{bands[j]} (segment{k}) is zero or close to zero")
-
-            if h == 1:  # h=0 -> normal distribution
-                print(f"Group {channels[i]}_{bands[j]} (segment{k}) doesn't have a normal distribution")
-
+                
+                if h.pvalue < 0.05:  # h.pvalue -> p-value of the test
+                    print(f"Group {channels[i]}_{bands[j]} (segment{k}) doesn't have a normal distribution")
 
 print("Relevant features based on Kruscal-Wallis\n\n")
+
+num_comparisons = len(channels) * len(bands)
+alpha = 0.05  # Or your chosen significance level
+bonferroni_alpha = alpha / num_comparisons
 
 for i in range(len(channels)):
     for j in range(len(bands)):
         label = channels[i] + "_" + bands[j]
 
-        # Assuming you have imported necessary libraries and have the required data
-        # Replace the following lines with actual data and function calls
-            # Replace the following line with actual data
         data = [all_subj[:, 0, columnNames.index(label)],
                 all_subj[:, 1, columnNames.index(label)],
                 all_subj[:, 2, columnNames.index(label)],
                 all_subj[:, 3, columnNames.index(label)],
                 all_subj[:, 4, columnNames.index(label)]]
 
-        # Perform Kruskal-Wallis test
+        # Perform Kruskal-Wallis 
         result = stats.kruskal(data[0], data[1], data[2], data[3], data[4])
-        
+        print(f"Channel: {channels[i]}; Frequency Band: {bands[j]}")
         print("Statistic:", result.statistic)
         print("p-value:", result.pvalue)
 
-        # # Multiple comparison (with Bonferroni correction)
-        # gnames = pairwise_tukeyhsd(result, ['t(neutral)', 't(stimulus)', 't(stimulus+1)', 't(stimulus+2)', 't(stimulus+3)'])
-        # print(f"Channel: {channels[i]}; Frequency Band: {bands[j]}")
+        # If Kruskal-Wallis is significant, perform Tukey's HSD
+        if result.pvalue < bonferroni_alpha:
+            data_all = np.concatenate(data)
+            groups = np.repeat(['t(neutral)', 't(stimulus)', 't(stimulus+1)', 't(stimulus+2)', 't(stimulus+3)'], len(data[0]))
+            tukey_result = pairwise_tukeyhsd(data_all, groups)
+            print(tukey_result)
 
-        # idx = [k for k in range(len(c)) if c[k, 6] <= 0.05]
-        # # c[:, 6] -> column with the p values
-        # # c[:, 6] <= 0.05 -> p values <= significance level 0.05
+# Areas of interest (channels) obtained from the Kruscal-Wallis test
 
-        # if len(idx) > 0:  # If there are p values < 0.05
-        #     for k in idx:
-        #         if c[k, 1] == 1 or c[k, 2] == 1:
-        #             # Because we want the significant difference compared with the instant before stimulus (neutral condition)
-        #             print(f"{label} ({c[k, 1]}, {c[k, 2]})")
+significantChannels = ['Fp1', 'Fp2', 'F7', 'Fz', 'F8', 'T3', 'C3', 'Cz', 'T4', 'T5']  
+
+# Indices of brain areas of interest (channels)
+areasOfInterest = []
+for i in range(len(significantChannels)):
+        areasOfInterest.append(channels.index(significantChannels[i]))
+
+numRelevChann = len(areasOfInterest)  # number of areas/channels of interest (discriminative between the neutral and stimulus conditions)
+
+# Remove the irrelevant channels
+neutralData = neutralData[areasOfInterest, :, :, :]
+stimulusData = stimulusData[areasOfInterest, :, :]
+
+
+#----------------- Functional Connectivity -----------------
+# Frequency band to be analysed
+bandOfInterest = input("Choose one band: all, delta, theta, alpha, beta, gamma: ")
+LowerFreq = float(input('Lower frequency: ')) #[0.5 80], [0.5 4], [4 7], [8 12], [13 30], [30 80]
+UpperFreq = float(input('Upper frequency: '))
+freqRange = [LowerFreq, UpperFreq]
+
+# Initialize arrays
+preCoherence = np.zeros((numRelevChann, numRelevChann, neutralData.shape[2], numPartic))
+preImagCoherence = np.zeros((numRelevChann, numRelevChann, neutralData.shape[2], numPartic))
+posCoherence = np.zeros((numRelevChann, numRelevChann, numPartic))
+posImagCoherence = np.zeros((numRelevChann, numRelevChann, numPartic))
+
+
+for p in range(numPartic):
+    for i in range(numRelevChann):
+        for j in range(numRelevChann):
+            # Pre-Stimulus
+            for neutIdx in range(neutralData.shape[2]):
+                # Compute cross-spectral power density
+                f, pre_Sxy = csd(neutralData[i, :, neutIdx, p], neutralData[j, :, neutIdx, p], fs=fs, nperseg=2048)
+                f, pre_Sxx = welch(neutralData[i, :, neutIdx, p], fs=fs, nperseg=2048)
+                f, pre_Syy = welch(neutralData[j, :, neutIdx, p], fs=fs, nperseg=2048)
+
+                # Restrict to frequency band of interest
+                freqIdx = np.where((f >= freqRange[0]) & (f <= freqRange[1]))
+                pre_Sxy = pre_Sxy[freqIdx]
+                pre_Sxx = pre_Sxx[freqIdx]
+                pre_Syy = pre_Syy[freqIdx]
+
+                preCoherency = pre_Sxy / np.sqrt(pre_Sxx * pre_Syy)  # Coherency
+                preCoherence[i, j, neutIdx, p] = np.mean(np.abs(preCoherency))
+                preImagCoherence[i, j, neutIdx, p] = np.mean(np.abs(np.imag(preCoherency)))
+
+            # Pos-Stimulus
+            f, pos_Sxy = csd(stimulusData[i, :, p], stimulusData[j, :, p], fs=fs, nperseg=2048)
+            f, pos_Sxx = welch(stimulusData[i, :, p], fs=fs, nperseg=2048)
+            f, pos_Syy = welch(stimulusData[j, :, p], fs=fs, nperseg=2048)
+
+            pos_Sxy = pos_Sxy[freqIdx]
+            pos_Sxx = pos_Sxx[freqIdx]
+            pos_Syy = pos_Syy[freqIdx]
+
+            posCoherency = pos_Sxy / np.sqrt(pos_Sxx * pos_Syy)
+            posCoherence[i, j, p] = np.mean(np.abs(posCoherency))
+            posImagCoherence[i, j, p] = np.mean(np.abs(np.imag(posCoherency)))
+
+
+# Average of connectivity across the several neutral instants
+preCoherence = np.mean(preCoherence, axis=2)
+preImagCoherence = np.mean(preImagCoherence, axis=2)
+
+# Average of all the participants
+avgPreCoherence = np.mean(preCoherence, axis=2)
+avgPreImagCoherence = np.mean(preImagCoherence, axis=2)
+avgPosCoherence = np.mean(posCoherence, axis=2)
+avgPosImagCoherence = np.mean(posImagCoherence, axis=2)
+
+# Pos-Pre (difference between the connectivity values of the neutral and threat conditions)
+diffCoherence = avgPosCoherence - avgPreCoherence
+diffImagCoherence = avgPosImagCoherence - avgPreImagCoherence
+
+# kstest to find data distribution
+findDataDistribution('Coherence',preCoherence,posCoherence,significantChannels)
+print("-----\n")
+findDataDistribution('Imaginary Part of Coherence',preImagCoherence,posImagCoherence,significantChannels)
+
