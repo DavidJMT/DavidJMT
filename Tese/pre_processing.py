@@ -13,14 +13,14 @@ plt.rcParams['figure.max_open_warning'] = 100
 
 # Importing the data with data related to the video 
 subj = int(input("Choose the Participant: "))
-file_path = '/Users/davidteixeira/Documents/Universidade/Tese/EEG_{}.mat'.format(subj)
+file_path = '/Users/davidteixeira/Documents/GitHub/DavidJMT/EEGs/EEG_{}.mat'.format(subj)
 data_mat = loadmat(file_path)
 fs = int(np.squeeze(data_mat['fs']))  #becomes a scalar
 channels_np = data_mat['channels']
 channels_arr = channels_np[0].tolist()
 channels = [item for sublist in channels_arr for item in sublist] # Flatten the list
 
-data = data_mat['data'].T #(19xn)
+data = data_mat['data'] #(21xn)
 
 # Plot the data for the subject before filter
 for i in range(0,len(channels)):
@@ -40,7 +40,7 @@ for i in range(0,len(channels)):
     plt.plot(freq_x, np.abs(freq_data), 'm',linewidth=0.5)
     plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform')
     plt.title(str(channels[i]) + ' - Frequency Domain')
-plt.close()
+plt.show()
 
 # Filtering
 fc = np.array([37, 50])  # The data were filtered between 0.5–70.0 Hz using a 50 Hz Notch filter to remove power line noise
@@ -82,7 +82,7 @@ for i in range(len(channels)):
     freq_data = np.fft.fftshift(np.fft.fft(filtData[i, :]))
     plt.plot(freq_x, np.abs(freq_data), 'm',linewidth=0.5); plt.xlim(fc)
     plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(str(channels[i]) + ' - Frequency Domain')
-plt.close()
+plt.show()
 
 # ICA
 r = len(channels)
@@ -109,7 +109,7 @@ for i in range(1, r):
     freq_data = np.fft.fftshift(np.fft.fft(Zfica[i, :]))
     plt.plot(freq_x, np.abs(freq_data), 'm')
     plt.xlim(fc_bandpass); plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(f'Component {i} - Frequency Domain')
-plt.close()
+plt.show()
 
 # Plot all ICs in the same graph
 for i in range(r):
@@ -118,7 +118,7 @@ for i in range(r):
     plt.plot(t, Zfica[i, :], '-',  linewidth=0.1)
     plt.xlim([0, 50])
     plt.ylabel(str(i + 1))
-plt.close()
+plt.show()
 
 #Reconstruction of the EEG data without the noisy IC
 noisy_components = []  
@@ -138,7 +138,7 @@ for i in range(len(channels)):
     # Time domain
     plt.subplot(2, 1, 1)
     time = np.arange(0, len(processedData[i, :]) / fs, 1 / fs)
-    plt.plot(time, processedData[i, :])
+    plt.plot(time, processedData[i, :],linewidth=0.05)
     plt.xlabel('Time (s)'); plt.ylabel('Voltage (V)'); plt.title(str(channels[i]) + ' - Time Domain')
     
     # Frequency domain
@@ -149,7 +149,7 @@ for i in range(len(channels)):
     plt.plot(freq_x, np.abs(freq_data), 'm')
     plt.xlabel('Frequency (Hz)'); plt.ylabel('Fourier Transform'); plt.title(str(channels[i]) + ' - Frequency Domain')
     plt.xlim(fc)  # Set frequency range
-plt.close()
+plt.show()
 
 #Plotting the spectrogram
 for i in range(len(channels)):
@@ -158,7 +158,7 @@ for i in range(len(channels)):
     plt.pcolormesh(t, f, 10 * np.log10(Sxx), shading='gouraud')
     plt.colorbar(label='Power (dB)'); plt.ylim(fc) 
     plt.title("Short Time Fourier Transform - " + str(channels[i])); plt.ylabel('Frequency [Hz]'); plt.xlabel('Time [sec]')
-plt.close()
+plt.show()
 
-np.savez(f'/Users/davidteixeira/Documents/GitHub/DavidJMT/Tese/EEG_{subj}_processed.npz', fs=fs, channels=channels, filtData=filtData)
+np.savez(f'/Users/davidteixeira/Documents/GitHub/DavidJMT/EEG_Processed/EEG_{subj}_processed.npz', fs=fs, channels=channels, filtData=filtData)
 print("Processed information saved to 'EEG_{subj}_processed.npz' successfully.")

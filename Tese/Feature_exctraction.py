@@ -26,8 +26,6 @@ def findDataDistribution(method,neutData,StimData,signifChannels):
                     print(signifChannels[i]+"-"+signifChannels[j]+" (stimulus) doesn't have a normal distribution\n")
 
 
-
-
 participants = np.array([9, 18, 19, 24]) #list for the participants
 numPartic = len(participants)
 numChannels = 19
