@@ -259,4 +259,3 @@ diffImagCoherence = avgPosImagCoherence - avgPreImagCoherence
 findDataDistribution('Coherence',preCoherence,posCoherence,significantChannels)
 print("-----\n")
 findDataDistribution('Imaginary Part of Coherence',preImagCoherence,posImagCoherence,significantChannels)
-

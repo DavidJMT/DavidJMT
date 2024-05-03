@@ -121,7 +121,7 @@ for i in range(r):
 plt.show()
 
 #Reconstruction of the EEG data without the noisy IC
-noisy_components = []  
+noisy_components = []
 n = int(input("How many components will you want to remove: ")) 
 for i in range(n):
     number = int(input('Insert Noisy Component:')) - 1
