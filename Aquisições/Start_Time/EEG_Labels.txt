@@ -1,0 +1,27 @@
+EEG_14 (1) -> Mariana Montenegro -> Maquina falhou mas tinha se assustado e sentido empatia
+EEG_17 (2) -> Cris -> Sem empatia, assustou-se com som da pedra -> 2
+EEG_19 (3) -> Madeira -> Alguma mas pouca empatia, assustou-se com o som da pedra 
+EEG_23 (4) -> Daniela -> Sentiu que n era o foco quando morreu. Assustou-se com o som
+EEG_24 (5) -> Ponte -> Medo do gajo reagir, aliviada pq nao se teve de preocupar mais, assustou-se com o som
+EEG_25 (6) -> Fran -> Susto, assustou-se com as pedras e c/ o som
+EEG_26 (7) -> Matilde Agra -> Curiosidade, assustou-se com a pedra
+EEG_28 (8) -> Frederico Lisboa -> Confusão / Desconforto, assustou-se com o som
+EEG_29 (9) -> João Mortágua -> Empatia, engraçado
+EEG_30 (10) -> Guilherme Nunes -> Engraçado
+EEG_31 (11) -> Young -> Empatia
+EEG_33 (12) -> Patrícia Silva -> Empatia, assustou-se com a pedra, medo do homem voltar
+EEG_58 (13) -> Pedro Melo Fonseca -> Curiosidade
+EEG_59 (14) -> Lucas Anjo -> Engraçado/Curiosidade
+EEG_61 (15) -> Pedro -João?
+EEG_70 (16) -> Patrícia Nápoles -> Empatia
+EEG_71 (17) -> Miguel Serra -> Sem resultado
+EEG_72 (18) -> Leonor Jacob -> Empatia
+EEG_73 (19) -> Eduardo Falvo -> Empatia
+EEG_74 (20) -> Vasco Bastos -> Maquina falhou
+EEG_75 (21) -> Diogo Pina - João -> Eletrodos ao contrario
+EEG_76 (22) -> Tiago - João -> Engraçado, sem empatia
+EEG_77 (23) -> Constança Loureiro -> Empatia
+EEG_83 (24) -> Guilherme - João -> Empatia, medo da pedra cair em cima dele
+EEG_86 (25) -> Diogo - João -> Engraçado mas sentiu alguma pena e medo de cair em cima dele
+EEG_88 (26) -> Filipa - João -> Susto e curiosidade
+EEG_91 (27) -> João Gil - João -> Curiosidade, Mas pouca empatia
