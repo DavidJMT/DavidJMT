@@ -58,10 +58,9 @@ function [processedData, ECG_filt] = perform_ica(subj, ~, ECG_data, ~, fs)
         noisy_components = [noisy_components, number];
     end
     
-    T(:,noisy_components)=0;
-    
+    Zica(noisy_components,:)=0;
     %Reconstruct the signal
-    processedData = (T \ (W' * Zica))';
+    processedData = (T \ W' * Zica)';
     
     % Plot the reconstructed EEG and ECG data after ICA
     plotting = input('Do you want to plot the each recontructed EEG after ICA? "Yes" OR "No" \n ','s');
