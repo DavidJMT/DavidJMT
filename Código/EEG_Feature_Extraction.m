@@ -1,4 +1,4 @@
-participants = [10];
+participants = [2,10];
 numPartic = length(participants);
 numChannels = 19;
 fs = 512;
@@ -19,7 +19,7 @@ freqBands=[[0.5 4]; [4 7]; [8 12]; [13 30]; [30 80]]; %frequency range for each 
 all_subj = zeros(numPartic, 4, 19*length(bands));
 
 for part = 1:numPartic
-    load('/Users/davidteixeira/Documents/GitHub/DavidJMT/EEG_Processed/EEG_'+string(participants(part))+'_processed.mat','fs','channels','processedData') 
+    load('/Users/davidteixeira/Documents/GitHub/DavidJMT/Dados/EEG_Processed/EEG_'+string(participants(part))+'_processed.mat','fs','channels','processedData') 
     
     neutIdx =1;
     for neut=(15*fs):fs:(55*fs)

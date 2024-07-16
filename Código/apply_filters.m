@@ -16,7 +16,10 @@ function [EEG_filt, ECG_data,fc] = apply_filters(data, fs, channels)
 %               3rd -> Plotting the filters for visualization.
 
     disp('-----Applying filters-----');
-
+    %Remove ECGground electrode from ECG electrode 
+    data(:,20) = data(:,21)-data(:,20);
+    data(:,21) = [];
+    
     EEG_data = data(:, 1:end - 1);
     ECG_data = data(:, end);
 
@@ -46,7 +49,7 @@ function [EEG_filt, ECG_data,fc] = apply_filters(data, fs, channels)
             num_elements = numel(EEG_filt(:, i));
             freq_x = (-num_elements/2:num_elements/2 - 1) * fs / num_elements;
             freq_data = fftshift(fft(EEG_filt(:, i)));
-            plot(freq_x, abs(freq_data), 'm');
+            plot(freq_x, abs(freq_data), 'm'); xlim(fc);
             xlabel('Frequency (Hz)'); ylabel('Fourier Transform');
             title(string(channels(i)) + '- Frequency Domain');
         end

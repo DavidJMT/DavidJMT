@@ -3,7 +3,7 @@ clear; close all; clc;
 subj = input('Choose the Participant: ','s');
 
 [data, channels, fs] = cut_process_trc(subj,"2");
-%plot_stft(data, channels, fs);
+plot_stft(data, channels, fs,'1');
 
 file_path = ['/Users/davidteixeira/Documents/GitHub/DavidJMT/Dados/EEGs/EEG_', subj,'.mat'];
 save(file_path,'fs','channels','data');

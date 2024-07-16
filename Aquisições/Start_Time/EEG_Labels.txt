@@ -25,3 +25,6 @@ EEG_83 (24) -> Guilherme - João -> Empatia, medo da pedra cair em cima dele
 EEG_86 (25) -> Diogo - João -> Engraçado mas sentiu alguma pena e medo de cair em cima dele
 EEG_88 (26) -> Filipa - João -> Susto e curiosidade
 EEG_91 (27) -> João Gil - João -> Curiosidade, Mas pouca empatia
+EEG_94 (28)
+EEG_96 (29)
+EEG_103 (30) -> Mariana Biomédica

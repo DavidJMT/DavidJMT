@@ -33,13 +33,7 @@ function import_and_plot_data(subj, fs,plotting)
             plot(time, data(:,20 + j - 1))
             title(['ECG Channel ', num2str(j)]); xlabel('Time (s)'); ylabel('Amplitude')
         end
-        sgtitle('ECG Signals with Ground Channel')
+        sgtitle('ECG Electrodes')
 
-        data(:,20) = data(:,21)-data(:,20);
-        data(:,21) = [];
-    else
-        data(:,20) = data(:,21)-data(:,20);
-        data(:,21) = [];
-    end
     
 end
