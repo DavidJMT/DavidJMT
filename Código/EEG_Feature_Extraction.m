@@ -36,8 +36,8 @@ for part = 1:numPartic
         [s,f,t,p]=spectrogram(processedData(:,c),1/(1/fs),0.5/(1/fs),5/(1/fs),fs,'yaxis'); %Spectrogram using STFT
         
         %find neutral indices
-        [~,neutral_idx1]=min(abs(t-15)); %index corresponding to instant 20 s (start of the neutral part)
-        [~,neutral_idx2]=min(abs(t-55)); %index corresponding to instant 100 s (end of the neutral part)
+        [~,neutral_idx1]=min(abs(t-15)); %index corresponding to instant 15 s (start of the neutral part)
+        [~,neutral_idx2]=min(abs(t-55)); %index corresponding to instant 55 s (end of the neutral part)
 
         %find stimulus index
         if strcmp(condition,'threat')
@@ -45,7 +45,7 @@ for part = 1:numPartic
         elseif strcmp(condition,'sound')
              [~,condit_idx]=min(abs(t-200.5)); %sound -> 200 s (sound_idx -> [200 201]s)
         else %rock falling on nothing
-            [~,condit_idx]=min(abs(t-247.45)); %rock -> 247.45 s (rock_idx -> [246.95 247.95]s)
+            [~,condit_idx]=min(abs(t-247.5)); %rock -> 247.5 s (rock_idx -> [246.95 247.95]s)
         end
        
         %Indices corresponding to the time segments of interest
